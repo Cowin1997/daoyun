@@ -23,7 +23,7 @@
                     <el-calendar>
                       <template slot="dateCell" slot-scope="{data}">
                         <p :class="data.isSelected ? 'is-selected' : ''">
-                          {{ data.day.split('-').slice(1).join('-') }} {{data.day.split('-').slice(1).join('-')=="03-15" ? '✔️' : ''}}
+                          {{ data.day.split('-').slice(1).join('-') }} {{data.day==today ? '✔️' : ''}}
                         </p>
                       </template>
                     </el-calendar>
@@ -65,8 +65,10 @@
 <script>
 export default {
   data() {
+
     return {
             name: 'admin',
+            today:new Date().getMonth()+ '-' + new Date().getDate(),
             role:'超级管理员',
             todoList: [
                 {
@@ -96,7 +98,16 @@ export default {
             ]
           };    
   },
+  created(){
+       var date = new Date(); 
+        var mon = date.getMonth() + 1;
+        var day = date.getDate();
+        var nowDay = date.getFullYear() + "-" + (mon<10?"0"+mon:mon) + "-" +(day<10?"0"+day:day);
+        this.today = nowDay;
+        console.log(this.today)
+  },
   methods:{
+      
       deleteTodo(e){
         var index = e.$index;
         var title = e.row.title;

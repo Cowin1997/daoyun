@@ -9,6 +9,8 @@ import Student from '../components/pages/Student.vue'
 import Index from '../components/pages/Index.vue'
 import Admin from '../components/pages/Admin.vue'
 import Class from '../components/pages/Class.vue'
+import Teacher from '../components/pages/Teacher.vue'
+import Data from '../components/pages/Data.vue'
 Vue.use(Router)
 
 export default new Router({
@@ -45,6 +47,16 @@ export default new Router({
           path:'/class',
           component:Class,
           meta: { title: '班级管理' }
+        },
+        {
+          path:'/teacher',
+          component:Teacher,
+          meta: { title: '教师管理' }
+        },
+        {
+          path:'/data',
+          component:Data,
+          meta: { title: '数据字典' }
         }
       ]
     },

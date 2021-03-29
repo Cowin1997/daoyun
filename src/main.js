@@ -9,7 +9,7 @@ import axios from 'axios' // 导入axios http请求库
 import VueCookies from 'vue-cookies'
 
 
-axios.defaults.baseURL = 'http://localhost:8080/' // 设置默认请求的url
+axios.defaults.baseURL = 'http://localhost:8888/' // 设置默认请求的url
 axios.defaults.withCredentials = true; // 允许前端访问后端时携带cookies信息
 Vue.prototype.$http = axios
 Vue.config.productionTip = false

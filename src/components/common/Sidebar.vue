@@ -12,7 +12,7 @@
         >
             <template v-for="item in items">
                 <template v-if="item.subs">
-                    <el-submenu :index="item.index" :key="item.index">
+                    <el-submenu :index="item.uri" :key="item.id">
                         <template slot="title">
                             <i :class="item.icon"></i>
                             <span slot="title">{{ item.title }}</span>
@@ -20,26 +20,26 @@
                         <template v-for="subItem in item.subs">
                             <el-submenu
                                 v-if="subItem.subs"
-                                :index="subItem.index"
-                                :key="subItem.index"
+                                :index="subItem.uri"
+                                :key="subItem.id"
                             >
                                 <template slot="title">{{ subItem.title }}</template>
                                 <el-menu-item
                                     v-for="(threeItem,i) in subItem.subs"
                                     :key="i"
-                                    :index="threeItem.index"
+                                    :index="threeItem.uri"
                                 >{{ threeItem.title }}</el-menu-item>
                             </el-submenu>
                             <el-menu-item
                                 v-else
-                                :index="subItem.index"
-                                :key="subItem.index"
+                                :index="subItem.uri"
+                                :key="subItem.id"
                             >{{ subItem.title }}</el-menu-item>
                         </template>
                     </el-submenu>
                 </template>
                 <template v-else>
-                    <el-menu-item :index="item.index" :key="item.index">
+                    <el-menu-item :index="item.uri" :key="item.id">
                         <i :class="item.icon"></i>
                         <span slot="title">{{ item.title }}</span>
                     </el-menu-item>
@@ -68,12 +68,13 @@ export default {
     },
     computed:{
         onRoutes(){
-            this.$http.get("/index/getitems").then(res => {
-            console.log("/index/getitems")
+            this.$http.get("/index/getMenu").then(res => {
+            console.log("/index/getMenu")
             console.log(res);
             if(res.data.status === 'success'){
                 this.items = res.data.items;
                 console.log('success');
+                console.log(this.items)
             }
             else{
                 this.$message.success('数据获取失败');
@@ -83,7 +84,7 @@ export default {
         console.log(this.$route.path)
         console.log('OnRoutes：'+path)
 
-        return this.$route.path.replace('/', '');
+            return this.$route.path.replace('/', '');
         }
 
     }
