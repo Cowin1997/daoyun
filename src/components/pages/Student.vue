@@ -1,24 +1,24 @@
 <template>
     <div style="height:100%;width:100%;"> 
     <el-form :inline="true"  class="demo-form-inline" style="border-radius: 30px;">
-        <el-form-item label="学校">
-            <el-select v-model="schoolcode" :loading="schoolLoading" placeholder="请选择学校" @change="ChangeSchool" @focus="focusSchool">
-                <el-option v-for="item in schools" :key="item.id" :label="item.name" :value="item.code" ></el-option>
+        <el-form-item label="学校" @focus="focusSchool">
+            <el-select v-model="schoolcode" :loading="schoolLoading" placeholder="请选择学校" @change="SelectSchool" @focus="focusSchool">
+                <el-option v-for="item in schools" :key="item.id" :label="item.sch_name" :value="item.sch_code" ></el-option>
+            </el-select>
+        </el-form-item>
+        <el-form-item label="学院">
+            <el-select v-model="collegeid" placeholder="请选择学院" @change="SelectCollege" >
+                <el-option v-for="item in colleges" :key="item.id" :label="item.co_collegename" :value="item.co_collegeid" ></el-option>
             </el-select>
         </el-form-item>
         <el-form-item label="专业">
-            <el-select v-model="majorcode" placeholder="请选择专业" @change="ChangeMajor" >
-                <el-option v-for="item in majors" :key="item.id" :label="item.name" :value="item.majorcode" ></el-option>
+            <el-select v-model="majorcode" placeholder="请选择专业" @change="SelectMajor">
+                <el-option v-for="item in majors" :key="item.value" :label="item.ma_majorname" :value="item.ma_majorid" ></el-option>
             </el-select>
         </el-form-item>
-        <!-- <el-form-item label="班级">
-            <el-select v-model="grade" placeholder="请选择班级" @change="ChangeGrade">
-                <el-option v-for="item in grades" :key="item.value" :label="item.label" :value="item.value" ></el-option>
-            </el-select>
-        </el-form-item> -->
         <el-form-item label="班级">
-            <el-select v-model="classid" placeholder="请选择班级" @change="ChangeClass">
-                <el-option v-for="item in classes" :key="item.cid" :label="item.cname" :value="item.cid" ></el-option>
+            <el-select v-model="classid" placeholder="请选择班级" @change="SelectClass">
+                <el-option v-for="item in classes" :key="item.id" :label="item.cl_classname" :value="item.cl_classid" ></el-option>
             </el-select>
         </el-form-item>
         <el-form-item><el-button type="primary" @click="query">查询</el-button></el-form-item>
@@ -120,6 +120,7 @@ export default {
             id:'',
             name:'',
         },
+       
         searchSid:'',
         schoolLoading:false,
         editVisible:false,
@@ -135,6 +136,10 @@ export default {
         total:0,
         pagesize:10,
         currentPage:1,
+        major:null,
+        majors:[],
+        colleges:[],
+        collegeid:'',
 
 
       }
@@ -182,45 +187,61 @@ export default {
         focusSchool(){
             console.log("focusSchool...");
             this.schoolLoading = !this.schoolLoading;
-            this.$http.get("/school/getAllSchool").then(res => {
-            console.log("res => /school/getAllSchool");
+            this.$http.get("/school").then(res => {
+            console.log("res => /school");
             console.log(res);
-            if(res.data.length > 0 ){
+            if(res.data.status === 0 ){
                 this.schoolLoading = !this.schoolLoading;
-                this.schools = res.data;
+                this.schools = res.data.datas;
             }
             else{
-                this.school = null;
+                this.schools = null;
                 this.schoolLoading = !this.schoolLoading;
             }
            });
         },
-        ChangeSchool(){
-            console.log("ChangeSchool....")
+        SelectSchool(){
+            console.log("SelectSchool....")
             console.log("brfore, get School's majors... SchoolCode:"+ this.schoolcode);
-            this.$http.get("/major/getMajors",{params:{
-                "schoolcode":this.schoolcode,
+            this.$http.get("/college",{params:{
+                "sch_code":this.schoolcode,
             }}).then(res => {
-                console.log("res => /school/getAllSchool");
+                console.log("res => /school");
                 console.log(res);
-                if(res.data.length > 0 ){
-                    this.majors = res.data;
+                if(res.data.status === 0 ){
+                    this.colleges = res.data.datas;
+                }
+                else{
+                    this.colleges = null;
+                }
+           });
+        },
+        SelectCollege(){
+           console.log("SelectCollege..."+this.collegeid);
+           this.$http.get("/major",{params:{
+                sch_code:this.schoolcode,
+                col_id:this.collegeid
+            }}).then(res => {
+                console.log("res => /class/getClass");
+                console.log(res);
+                if(res.data.status === 0 ){
+                    this.majors = res.data.datas;
                 }
                 else{
                     this.majors = null;
                 }
            });
         },
-        ChangeMajor(){
-           console.log("ChangeMajor...");
-           console.log("brfore, get Major's all classes .. majorcode:"+ this.majorcode);
-           this.$http.get("/class/getClass",{params:{
-                "majorcode":this.majorcode,
+        SelectMajor(){
+           console.log("SelectMajor..."+ this.majorcode);
+           this.$http.get("/course",{params:{
+                "sch_code":this.schoolcode,
+                "col_id":this.collegeid,
+                "maj_id":this.majorcode
             }}).then(res => {
-                console.log("res => /class/getClass");
                 console.log(res);
-                if(res.data.length > 0 ){
-                    this.classes = res.data;
+                if(res.data.status=== 0 ){
+                    this.classes = res.data.datas;
                 }
                 else{
                     this.classes = null;

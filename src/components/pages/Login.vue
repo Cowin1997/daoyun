@@ -48,15 +48,15 @@ export default {
         submitForm() {
             this.$refs.login.validate(valid => {
                 if (valid) {
-                    this.$http.post("/login",{
-                        account:this.param.username,
+                    this.$http.post("/admin/login",{
+                        username:this.param.username,
                         password:md5(this.param.password)
                     }).then(res => {
                         console.log("res")
                         console.log(res)
-                        if(res.data.status === 'true'){
+                        if(res.data.status === 0){
                             this.$message.success('登录成功');
-                            localStorage.setItem("user",this.param.username);
+                            localStorage.setItem("user",res.data.datas);
                             this.$router.push('/index');
                             return true;
                         }
